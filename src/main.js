@@ -30,6 +30,8 @@ import ImageUpload from "@/components/ImageUpload"
 import DictTag from '@/components/DictTag'
 // 头部标签组件
 import VueMeta from 'vue-meta'
+// BASE64
+import Base64 from 'js-base64'
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts

@@ -1,9 +1,10 @@
 import request from '@/utils/request'
+import store from '../store'
 
 // 获取路由
 export const getRouters = () => {
   return request({
-    url: '/getRouters',
+    url: '/sysLogin/getMenus/' + store.getters.userId,
     method: 'get'
   })
 }

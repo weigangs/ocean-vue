@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import user from '../store/modules/user'
 
 // 登录方法
 export function login(username, password, code) {
@@ -7,8 +8,15 @@ export function login(username, password, code) {
     password,
     code
   }
+
+  data.client_id = 'frontend'
+  data.client_secret = 'frontend'
+  data.grant_type = 'password'
+
+  let url = '/oauth/token?username=' + username + '&password=' +password+ '&code=' +code+ '&client_id=' +data.client_id+ '&client_secret=' +data.client_secret+ '&grant_type=' + data.grant_type
+  console.log(url)
   return request({
-    url: '/oauth/token',
+    url: url,
     method: 'post',
     data: data
   })
@@ -29,7 +37,7 @@ export function register(data) {
 // 获取用户详细信息
 export function getInfo() {
   return request({
-    url: '/getInfo',
+    url: '/sysLogin/user',
     method: 'get'
   })
 }
