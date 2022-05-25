@@ -14,7 +14,6 @@ export function login(username, password, code) {
   data.grant_type = 'password'
 
   let url = '/oauth/token?username=' + username + '&password=' +password+ '&code=' +code+ '&client_id=' +data.client_id+ '&client_secret=' +data.client_secret+ '&grant_type=' + data.grant_type
-  console.log(url)
   return request({
     url: url,
     method: 'post',
