@@ -51,7 +51,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2021 ruoyi.vip All Rights Reserved.</span>
+      <span>Copyright © 2018-2021 lkyl All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -118,7 +118,7 @@ export default {
       const rememberMe = Cookies.get('rememberMe')
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
-        password: password === undefined ? this.loginForm.password : decrypt(password),
+        password: password === undefined ? this.loginForm.password : password,
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
@@ -128,7 +128,7 @@ export default {
           this.loading = true;
           if (this.loginForm.rememberMe) {
             localStorage.setItem("username", this.loginForm.username);
-            localStorage.setItem("password", encrypt(this.loginForm.password));
+            localStorage.setItem("password", this.loginForm.password);
             localStorage.setItem('rememberMe', this.loginForm.rememberMe);
             localStorage.setItem("startTime", new Date().getTime)
           } else {

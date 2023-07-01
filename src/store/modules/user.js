@@ -1,10 +1,12 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { encrypt} from '@/utils/jsencrypt'
+import { encrypt, threePhaseEncrypt} from '@/utils/jsencrypt'
+import Base64 from '@/utils/base64'
 
 const user = {
   state: {
     token: getToken(),
+    userId: '',
     name: '',
     avatar: '',
     roles: [],
@@ -14,6 +16,9 @@ const user = {
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
+    },
+    SET_USER_ID: (state, userId) => {
+      state.userId = userId
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -32,14 +37,18 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const Base64 = require('js-base64').Base64
+
+      // OAUTH2 LOGIN
       const username = userInfo.username.trim()
-      const password = Base64.encrypt(encrypt(userInfo.password))
+      // let cryptTxt = encrypt(userInfo.password)
+      let cryptTxt = threePhaseEncrypt('admin');
+      //解决URL中默认将'+'替换成空字符串问题
+      const password = encodeURIComponent(cryptTxt)
       const code = userInfo.code
       return new Promise((resolve, reject) => {
         login(username, password, code).then(res => {
           setToken(res.access_token)
-          commit('SET_TOKEN', res.token)
+          commit('SET_TOKEN', res.access_token)
           resolve()
         }).catch(error => {
           reject(error)
@@ -51,14 +60,15 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
-          const user = res.user
-          const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          const user = res.data
+          const avatar = (user.avatar === undefined || user.avatar == "") ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', res.roles)
-            commit('SET_PERMISSIONS', res.permissions)
+            commit('SET_ROLES', user.roles)
+            commit('SET_PERMISSIONS', user.permissions)
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
+          commit('SET_USER_ID', user.userId)
           commit('SET_NAME', user.userName)
           commit('SET_AVATAR', avatar)
           resolve(res)
