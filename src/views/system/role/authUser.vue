@@ -1,22 +1,20 @@
 <template>
   <div class="app-container">
-     <el-form :model="queryParams" ref="queryForm" v-show="showSearch" :inline="true">
+     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
       <el-form-item label="用户名称" prop="userName">
         <el-input
           v-model="queryParams.userName"
           placeholder="请输入用户名称"
           clearable
-          size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="phoneNumber">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryParams.phoneNumber"
           placeholder="请输入手机号码"
           clearable
-          size="small"
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
@@ -66,10 +64,10 @@
       <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
       <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
       <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
-      <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
+      <el-table-column label="手机" prop="phoneNumber" :show-overflow-tooltip="true" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="statusOptions" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.common_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -107,6 +105,7 @@ import selectUser from "./selectUser";
 
 export default {
   name: "AuthUser",
+  dicts: ['common_status'],
   components: { selectUser },
   data() {
     return {
@@ -122,15 +121,13 @@ export default {
       total: 0,
       // 用户表格数据
       userList: [],
-      // 状态数据字典
-      statusOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         roleId: undefined,
         userName: undefined,
-        phonenumber: undefined
+        phoneNumber: undefined
       }
     };
   },
@@ -139,9 +136,6 @@ export default {
     if (roleId) {
       this.queryParams.roleId = roleId;
       this.getList();
-      this.getDicts("sys_normal_disable").then(response => {
-        this.statusOptions = response.data;
-      });
     }
   },
   methods: {
@@ -157,8 +151,8 @@ export default {
     },
     // 返回按钮
     handleClose() {
-      this.$store.dispatch("tagsView/delView", this.$route);
-      this.$router.push({ path: "/system/role" });
+      const obj = { path: "/system/role" };
+      this.$tab.closeOpenPage(obj);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -182,30 +176,22 @@ export default {
     /** 取消授权按钮操作 */
     cancelAuthUser(row) {
       const roleId = this.queryParams.roleId;
-      this.$confirm('确认要取消该用户"' + row.userName + '"角色吗？', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function() {
+      this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
         return authUserCancel({ userId: row.userId, roleId: roleId });
       }).then(() => {
         this.getList();
-        this.msgSuccess("取消授权成功");
+        this.$modal.msgSuccess("取消授权成功");
       }).catch(() => {});
     },
     /** 批量取消授权按钮操作 */
     cancelAuthUserAll(row) {
       const roleId = this.queryParams.roleId;
       const userIds = this.userIds.join(",");
-      this.$confirm('是否取消选中用户授权数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-      }).then(() => {
-          return authUserCancelAll({ roleId: roleId, userIds: userIds });
+      this.$modal.confirm('是否取消选中用户授权数据项？').then(function() {
+        return authUserCancelAll({ roleId: roleId, userIds: userIds });
       }).then(() => {
         this.getList();
-        this.msgSuccess("取消授权成功");
+        this.$modal.msgSuccess("取消授权成功");
       }).catch(() => {});
     }
   }

@@ -10,9 +10,9 @@ export function listData(query) {
 }
 
 // 查询字典数据详细
-export function getData(dictCode) {
+export function getData(dictDataId) {
   return request({
-    url: '/system/dict/data/' + dictCode,
+    url: '/system/dict/data/' + dictDataId,
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function getDicts(dictType) {
 // 新增字典数据
 export function addData(data) {
   return request({
-    url: '/system/dict/data',
+    url: '/system/dict/data/add',
     method: 'post',
     data: data
   })
@@ -37,25 +37,16 @@ export function addData(data) {
 // 修改字典数据
 export function updateData(data) {
   return request({
-    url: '/system/dict/data',
-    method: 'put',
+    url: '/system/dict/data/update',
+    method: 'post',
     data: data
   })
 }
 
 // 删除字典数据
-export function delData(dictCode) {
+export function delData(dictDataId) {
   return request({
-    url: '/system/dict/data/' + dictCode,
-    method: 'delete'
-  })
-}
-
-// 导出字典数据
-export function exportData(query) {
-  return request({
-    url: '/system/dict/data/export',
-    method: 'get',
-    params: query
+    url: '/system/dict/data/delete',
+    method: 'post'
   })
 }

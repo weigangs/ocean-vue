@@ -1,21 +1,18 @@
 import request from '@/utils/request'
-import user from '../store/modules/user'
 
 // 登录方法
-export function login(username, password, code) {
+export function login(username, password, code, uuid) {
   const data = {
     username,
     password,
-    code
+    code,
+    uuid
   }
-
-  data.client_id = 'frontend'
-  data.client_secret = 'frontend'
-  data.grant_type = 'password'
-
-  let url = '/oauth/token?username=' + username + '&password=' +password+ '&code=' +code+ '&client_id=' +data.client_id+ '&client_secret=' +data.client_secret+ '&grant_type=' + data.grant_type
   return request({
-    url: url,
+    url: '/login',
+    headers: {
+      isToken: false
+    },
     method: 'post',
     data: data
   })
@@ -36,7 +33,7 @@ export function register(data) {
 // 获取用户详细信息
 export function getInfo() {
   return request({
-    url: '/sysLogin/user',
+    url: '/getInfo',
     method: 'get'
   })
 }
@@ -53,6 +50,10 @@ export function logout() {
 export function getCodeImg() {
   return request({
     url: '/verify/code',
-    method: 'get'
+    headers: {
+      isToken: false
+    },
+    method: 'get',
+    timeout: 20000
   })
 }

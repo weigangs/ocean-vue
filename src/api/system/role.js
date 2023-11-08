@@ -20,7 +20,7 @@ export function getRole(roleId) {
 // 新增角色
 export function addRole(data) {
   return request({
-    url: '/system/role',
+    url: '/system/role/add',
     method: 'post',
     data: data
   })
@@ -29,8 +29,8 @@ export function addRole(data) {
 // 修改角色
 export function updateRole(data) {
   return request({
-    url: '/system/role',
-    method: 'put',
+    url: '/system/role/update',
+    method: 'post',
     data: data
   })
 }
@@ -62,15 +62,6 @@ export function delRole(roleId) {
   return request({
     url: '/system/role/' + roleId,
     method: 'delete'
-  })
-}
-
-// 导出角色
-export function exportRole(query) {
-  return request({
-    url: '/system/role/export',
-    method: 'get',
-    params: query
   })
 }
 
@@ -116,5 +107,13 @@ export function authUserSelectAll(data) {
     url: '/system/role/authUser/selectAll',
     method: 'put',
     params: data
+  })
+}
+
+// 根据角色ID查询部门树结构
+export function deptTreeSelect(roleId) {
+  return request({
+    url: '/system/role/deptTree/' + roleId,
+    method: 'get'
   })
 }

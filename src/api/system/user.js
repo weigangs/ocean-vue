@@ -1,10 +1,10 @@
 import request from '@/utils/request'
-import { praseStrEmpty } from "@/utils/ruoyi";
+import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询用户列表
 export function listUser(query) {
   return request({
-    url: '/system/user/list',
+    url: '/sysUser/queryList',
     method: 'get',
     params: query
   })
@@ -13,7 +13,23 @@ export function listUser(query) {
 // 查询用户详细
 export function getUser(userId) {
   return request({
-    url: '/system/user/' + praseStrEmpty(userId),
+    url: '/system/user/' + parseStrEmpty(userId),
+    method: 'get'
+  })
+}
+
+// 查询当前用户角色列比
+export function getCurUserRoleNameList() {
+  return request({
+    url: '/system/role/roleNameList',
+    method: 'get'
+  })
+}
+
+// 查询当前用户角色列比
+export function getUserWithRoleNameList(userId) {
+  return request({
+    url: '/sysUser/getUserInfowithRoleList/' + userId,
     method: 'get'
   })
 }
@@ -30,8 +46,8 @@ export function addUser(data) {
 // 修改用户
 export function updateUser(data) {
   return request({
-    url: '/system/user',
-    method: 'put',
+    url: '/sysUser/update',
+    method: 'post',
     data: data
   })
 }
@@ -41,15 +57,6 @@ export function delUser(userId) {
   return request({
     url: '/system/user/' + userId,
     method: 'delete'
-  })
-}
-
-// 导出用户
-export function exportUser(query) {
-  return request({
-    url: '/system/user/export',
-    method: 'get',
-    params: query
   })
 }
 
@@ -118,14 +125,6 @@ export function uploadAvatar(data) {
   })
 }
 
-// 下载用户导入模板
-export function importTemplate() {
-  return request({
-    url: '/system/user/importTemplate',
-    method: 'get'
-  })
-}
-
 // 查询授权角色
 export function getAuthRole(userId) {
   return request({
@@ -140,5 +139,13 @@ export function updateAuthRole(data) {
     url: '/system/user/authRole',
     method: 'put',
     params: data
+  })
+}
+
+// 查询部门下拉树结构
+export function deptTreeSelect() {
+  return request({
+    url: '/system/user/deptTree',
+    method: 'get'
   })
 }
